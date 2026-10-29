@@ -62,6 +62,8 @@ st.subheader("Distribuição")
 
 if not variaveis:
     st.warning("Selecione pelo menos uma variável para ver a distribuição.")
+elif df_filtrado.empty:
+    st.info("Nenhum imóvel dentro dos intervalos escolhidos — ajuste os filtros para ver a distribuição.")
 else:
     variavel_hist = st.segmented_control(
         "Variável do histograma",
@@ -86,6 +88,8 @@ st.subheader("Correlação")
 
 if len(variaveis) < 2:
     st.warning("Selecione pelo menos 2 variáveis para calcular a correlação.")
+elif len(df_filtrado) < 2:
+    st.info("Menos de 2 imóveis dentro dos intervalos escolhidos — ajuste os filtros para calcular a correlação.")
 else:
     matriz_corr = df_filtrado[variaveis].corr(method="spearman")
     corr_long = matriz_corr.reset_index(names="variavel_x").melt(
