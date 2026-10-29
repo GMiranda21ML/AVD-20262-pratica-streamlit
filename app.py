@@ -128,8 +128,83 @@ with tab_dashboard1:
 with tab_dashboard2:
     # Rascunho: entregas/rascunho-dashboard2.png — filtros no topo, 4 KPIs numa
     # linha, gráfico de barras embaixo. Métricas justificadas em
-    # entregas/justificativa-metricas.md. Implementação na próxima parte.
-    st.info(
-        "Em construção — veja o rascunho em `entregas/rascunho-dashboard2.png` "
-        "e a justificativa das métricas em `entregas/justificativa-metricas.md`."
+    # entregas/justificativa-metricas.md.
+    ano_minimo, ano_maximo = int(df["ano"].min()), int(df["ano"].max())
+
+    col_periodo, col_categoria = st.columns([2, 1])
+    with col_periodo:
+        periodo = st.slider(
+            "Período (ano da transação)",
+            min_value=ano_minimo,
+            max_value=ano_maximo,
+            value=(ano_minimo, ano_maximo),
+        )
+    with col_categoria:
+        categoria = st.segmented_control(
+            "Tipo de ocupação",
+            options=["Todos", "Residencial", "Comercial"],
+            default="Todos",
+        )
+
+    df_dashboard2 = df[df["ano"].between(*periodo)]
+    if categoria and categoria != "Todos":
+        df_dashboard2 = df_dashboard2[df_dashboard2["tipo_ocupa_bin"] == categoria]
+
+    # Gráfico de barras com seleção cruzada (ver ALTAIR-CROSSFILTER.md, exemplo 3):
+    # clicar numa barra filtra os KPIs acima só para aquele(s) ano(s).
+    clique_ano = alt.selection_point(name="clique_ano", fields=["ano"])
+
+    barras_ano = (
+        alt.Chart(df_dashboard2)
+        .mark_bar()
+        .encode(
+            x=alt.X("ano:O", title="Ano da transação"),
+            y=alt.Y("count():Q", title="Transações"),
+            opacity=alt.condition(clique_ano, alt.value(1), alt.value(0.4)),
+            tooltip=[alt.Tooltip("ano:O", title="Ano"), alt.Tooltip("count():Q", title="Transações")],
+        )
+        .add_params(clique_ano)
     )
+
+    if df_dashboard2.empty:
+        st.info("Nenhuma transação dentro do período/tipo de ocupação escolhidos — ajuste os filtros acima.")
+    else:
+        evento = st.altair_chart(
+            barras_ano,
+            key="barras_ano_dashboard2",
+            on_select="rerun",
+            alt="Número de transações de ITBI por ano; clique numa barra para destacar aquele ano nos indicadores",
+        )
+
+        itens_clicados = evento.selection.get("clique_ano", [])
+        anos_selecionados = [item["ano"] for item in itens_clicados]
+        df_destaque = (
+            df_dashboard2[df_dashboard2["ano"].isin(anos_selecionados)] if anos_selecionados else df_dashboard2
+        )
+
+        if anos_selecionados:
+            st.caption(f"Indicadores destacados para: {', '.join(str(a) for a in sorted(anos_selecionados))}.")
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        if df_destaque.empty:
+            st.info("Nenhum imóvel no filtro/seleção atual.")
+        else:
+            imoveis_construidos = df_destaque[df_destaque["area_construida"] > 0]
+            valor_m2_mediano = (
+                (imoveis_construidos["valor_avaliacao"] / imoveis_construidos["area_construida"]).median()
+                if not imoveis_construidos.empty
+                else None
+            )
+            pct_residencial = (df_destaque["tipo_ocupa_bin"] == "Residencial").mean() * 100
+
+            col1.metric("Total de transações", f"{len(df_destaque):,}".replace(",", "."))
+            col2.metric(
+                "Valor mediano de avaliação",
+                f"R$ {df_destaque['valor_avaliacao'].median():,.0f}".replace(",", "."),
+            )
+            col3.metric(
+                "Valor mediano por m²",
+                f"R$ {valor_m2_mediano:,.0f}".replace(",", ".") if valor_m2_mediano is not None else "—",
+            )
+            col4.metric("% Residencial", f"{pct_residencial:.1f}%")
