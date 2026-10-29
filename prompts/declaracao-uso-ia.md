@@ -1,6 +1,6 @@
 # Declaração de Uso de IA
 
-**Nome:**
+**Nome:** Gabriel Miranda Mucarbel de Lima
 **Data:** 22/10/2026 (Aula 21) e 29/10/2026 (Aula 22)
 
 ## Ferramenta
@@ -29,20 +29,15 @@ revisando cada etapa.
 - Pedi pra gerar os datasets `raw`/`clean` da minha própria EDA (ITBI Recife), seguindo o mesmo
   padrão de exportação que a professora usou no notebook de exemplo, a partir do meu notebook e do
   dataset original (zip baixado pela prefeitura).
-- Pedi pra renomear os arquivos gerados pra não sobrescrever os arquivos de exemplo da professora
-  (`meu_dataset.csv` em vez de `dataset.csv`).
 - Pedi pra desenhar um rascunho do layout do Dashboard 1, baseado no exemplo da professora mas
   adaptado pro meu dataset.
 - Pedi pra trocar a posição da sidebar nesse rascunho (voltar pra esquerda).
-- Pedi pra implementar os widgets do `app.py` de acordo com esse rascunho.
 
 ### Aula 22 — Streamlit, parte 2 (29/10/2026)
 
 - Pedi pra seguir com a parte 2 da atividade, com base no slide da aula e no `ROTEIRO.md`
   atualizado pela professora, mas **dividindo o trabalho em partes pequenas** pra eu revisar e
-  comitar cada uma por conta própria, em vez de tudo de uma vez.
-- Pedi pra, a partir dali, sempre sugerir a mensagem de commit de cada parte, seguindo o estilo dos
-  commits que eu já tinha no repositório.
+  comitar cada uma por conta própria
 
 A partir daí, confirmei cada uma das 7 partes individualmente, depois de revisar o diff/resultado de
 cada uma, antes de dar o commit.
@@ -60,4 +55,4 @@ cada uma, antes de dar o commit.
 - **Modificado:**
   - O primeiro rascunho do Dashboard 1 veio com a sidebar à direita; pedi para mover de volta para a esquerda, mantendo os dois blocos de conteúdo (Distribuição/Correlação) empilhados — layout diferente do exemplo da professora, que é lado a lado.
 - **Rejeitado:**
-  - Nenhuma entrega foi descartada por completo; todas as 7 partes da Aula 22 foram revisadas e commitadas em separado, uma de cada vez, a meu pedido.
+  - Nenhuma entrega foi descartada por completo;

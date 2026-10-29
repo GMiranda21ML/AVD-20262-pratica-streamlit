@@ -60,7 +60,7 @@ tab_dashboard1, tab_dashboard2 = st.tabs(
 )
 
 with tab_dashboard1:
-    # Rascunho: prompts/rascunho_dashboard1.png — sidebar à esquerda, Distribuição
+    # Rascunho: entregas/rascunho-dashboard1.png — sidebar à esquerda, Distribuição
     # em cima e Correlação embaixo, empilhadas à direita.
     st.caption(f"{len(df_filtrado)} de {len(df)} imóveis dentro dos intervalos escolhidos.")
 
