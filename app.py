@@ -208,3 +208,39 @@ with tab_dashboard2:
                 f"R$ {valor_m2_mediano:,.0f}".replace(",", ".") if valor_m2_mediano is not None else "—",
             )
             col4.metric("% Residencial", f"{pct_residencial:.1f}%")
+
+            st.subheader("Distribuição do valor de avaliação")
+            histograma_valor = (
+                alt.Chart(df_destaque)
+                .mark_bar()
+                .encode(
+                    x=alt.X("valor_avaliacao:Q", bin=alt.Bin(maxbins=40), title="Valor de avaliação (R$)"),
+                    y=alt.Y("count():Q", title="Transações"),
+                )
+            )
+            st.altair_chart(
+                histograma_valor,
+                alt="Distribuição do valor de avaliação dos imóveis no filtro/seleção atual",
+            )
+
+            st.subheader("Bairros com mais transações")
+            top_bairros = (
+                df_destaque["bairro"]
+                .value_counts()
+                .head(10)
+                .rename_axis("bairro")
+                .reset_index(name="transacoes")
+            )
+            barras_bairro = (
+                alt.Chart(top_bairros)
+                .mark_bar()
+                .encode(
+                    x=alt.X("transacoes:Q", title="Transações"),
+                    y=alt.Y("bairro:N", sort="-x", title=None),
+                    tooltip=["bairro", "transacoes"],
+                )
+            )
+            st.altair_chart(
+                barras_bairro,
+                alt="Os 10 bairros com mais transações de ITBI no filtro/seleção atual",
+            )
